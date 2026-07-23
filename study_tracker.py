@@ -44,7 +44,7 @@ else:
     for subject in dic:
         # 修复4：使用 :.2% 自动将小数转为百分数
         print(f'科目：{subject}, 占比时间：{ (dic[subject] / today_time) :.2%}')
-    with open("study_traker.json","w",encoding="utf-8")as file:
+    with open("study_tracker.json","w",encoding="utf-8")as file:
         json.dump(dic,file,ensure_ascii=False,indent=4)
 
 
