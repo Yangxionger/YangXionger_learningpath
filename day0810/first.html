@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <input type="text" id="questionInput" placeholder="请输入想询问的问题">
+    <button id="submitBtn">提交问题</button>
+    <div id="displayAI"></div>
+    <select id="hardnessSelect">
+        <option value="beginner">初学者</option>
+        <option value="intermediate">中等水平者</option>
+    </select>
+
+    <script>
+        const myinput=document.getElementById("questionInput")
+        const myBtn=document.getElementById("submitBtn")
+        const box_column=document.getElementById('displayAI')
+        const mySelect=document.getElementById("hardnessSelect")
+
+        myBtn.addEventListener("click",function(){
+            box_column.textContent='AI正在疯狂思考中'
+            const captureQuestion=myinput.value
+            const myOption=mySelect.value
+            const requestData={
+                question:captureQuestion,
+                level: myOption
+            }
+
+            const packageData=JSON.stringify(requestData)
+
+            fetch("http://127.0.0.1:8000/chat",{
+                method:"POST",
+                headers:{
+                    'Content-Type':'application/json'
+                },
+                body:packageData
+            })
+            .then(response=>{
+                if(!response.ok){
+                    throw new Error("服务器返回了错误状态：" + response.status);
+                }
+                return response.json()
+            })
+            .then(data=>{
+                box_column.textContent=data.answer
+            })
+            .catch(error=>{
+                box_column.textContent = "哎呀，出错了！原因：" + error.message;
+            })
+        })
+    </script>
+</body>
+</html>
