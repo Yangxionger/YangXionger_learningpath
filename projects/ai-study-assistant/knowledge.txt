@@ -1,0 +1,10 @@
+FastAPI 是一个用于构建 Web API 的 Python 框架。
+FastAPI 可以使用 Pydantic 定义和验证请求数据。
+HTTP GET 通常用于从服务器获取数据。
+HTTP POST 通常用于向服务器提交数据。
+HTTP 状态码 200 表示请求成功。
+HTTP 状态码 404 表示请求的资源不存在。
+JSON 是一种常见的数据交换格式。
+Git add 用于把文件修改添加到暂存区。
+Git commit 用于把暂存区中的修改保存成一次版本记录。
+C++ 的 priority_queue 默认是大顶堆。

@@ -1,8 +1,11 @@
 import os
-from dotenv import load_dotenv, find_dotenv
+from pathlib import Path
+
+from dotenv import load_dotenv
 from openai import OpenAI
 
-load_dotenv(find_dotenv())
+ROOT_DIR = Path(__file__).resolve().parents[2]
+load_dotenv(ROOT_DIR / ".env")
 
 client = OpenAI(
     api_key=os.getenv("DEEPSEEK_API_KEY"),
@@ -10,7 +13,7 @@ client = OpenAI(
 )
 
 
-def ask_deepseek(question: str, system_prompt: str):
+def chat_with_llm(question: str, system_prompt: str) -> str:
 
     response = client.chat.completions.create(
         model="deepseek-v4-flash",

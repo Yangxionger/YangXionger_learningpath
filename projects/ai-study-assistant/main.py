@@ -1,9 +1,10 @@
-from fastapi import FastAPI,HTTPException
+from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 from typing import Literal
 
-from ai_service import ask_deepseek
+from llm import chat_with_llm
+from rag import ask_with_rag
 
 app = FastAPI()
 
@@ -17,6 +18,11 @@ app.add_middleware(
 class ChatRequest(BaseModel):
     question: str
     level: Literal["beginner", "intermediate"] = "beginner"
+
+
+class ChatResponse(BaseModel):
+    level: str
+    answer: str
 
 
 def get_prompt(level):
@@ -51,12 +57,12 @@ def get_prompt(level):
         """
 
 
-@app.post("/chat")
+@app.post("/chat", response_model=ChatResponse)
 def chat(request: ChatRequest):
     system_prompt = get_prompt(request.level)
 
     try:
-        answer = ask_deepseek(
+        answer = chat_with_llm(
             question=request.question,
             system_prompt=system_prompt
         )
@@ -67,6 +73,27 @@ def chat(request: ChatRequest):
             detail="大模型调用失败"
         )
     
+    return {
+        "level": request.level,
+        "answer": answer
+    }
+
+@app.post("/ask", response_model=ChatResponse)
+def ask(request: ChatRequest):
+    system_prompt = get_prompt(request.level)
+
+    try:
+        answer = ask_with_rag(
+            question=request.question,
+            system_prompt=system_prompt
+        )
+    except Exception as e:
+        print("RAG 调用失败:", e)
+        raise HTTPException(
+            status_code=500,
+            detail="RAG 调用失败"
+        )
+
     return {
         "level": request.level,
         "answer": answer
